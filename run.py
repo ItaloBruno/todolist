@@ -1,7 +1,7 @@
 # Importando Bibliotecas
+import os
 from flask import Flask
 from flask_restful import Resource, Api
-import os
 
 # Configurações da nossa API
 app = Flask(__name__)
