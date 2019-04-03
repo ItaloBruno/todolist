@@ -1,6 +1,6 @@
 #==================================================================================
 from flask import Flask
-from flask_restful import Resource, Api, reqparse, abort
+from flask_restful import Resource, Api, reqparse, abort, fields, marshal_with
 
 #==================================================================================
 # Configurações da nossa API
@@ -21,10 +21,18 @@ todo_list = {
 		'status':	 True
 	},
 	'task3': {
-		'nome':		'Métodos da classe TaskList',
+		'nome':		'Métmarshal_withodos da classe TaskList',
 		'descricao':'Implementar os seus métodos',
 		'status':	 False
 	}
+}
+
+taks_fields = {
+	'nome':			fields.String(default='Tarefa'),
+	'descricao': 	fields.String(default='Tarefa temporária'),
+	'tags':			fields.List(default=[]),
+	'status':		fields.Boolean(default=False),
+	'date_create':	fields.DateTime(dt_format='rfc822'),
 }
 
 #==================================================================================
@@ -38,10 +46,11 @@ def abort_if_task_doesnt_exist(task_id):
 
 #==================================================================================
 # Realização do parse das informações vindas no corpo da requisição HTTP.
-parse = reqparse.RequestParser()
-parse.add_argument('nome', 		type=str)
-parse.add_argument('descricao', type=str)
-parse.add_argument('status', 	type=bool)
+parser = reqparse.RequestParser(bundle_errors=True) # bundle_errors=True faz com que todas as mensagens de erro sejam de uma só vez
+parser.add_argument('nome',		 type=str, 	required=True, help="nome cannot be blank!")
+parser.add_argument('descricao', type=str, 	required=True, help="descricao cannot be blank!")
+parser.add_argument('tags', 	 type=str,	required=True, help="descricao cannot be blank!", action='append')
+parser.add_argument('status', 	 type=bool, required=True, help="status cannot be blank!")
 
 #==================================================================================
 """
@@ -58,7 +67,7 @@ class Task(Resource):
 
 	def put(self, task_id):
 		abort_if_task_doesnt_exist(task_id) # Verificando se a tarefa existe ou não
-		args = parse.parse_args()
+		args = parser.parse_args()
 		task = {
 			'nome':		 args['nome'],
 			'descricao': args['descricao'],
@@ -76,7 +85,8 @@ class Task(Resource):
 """
 	Classe responsável por responder as requisições HTTP direcionadas ao objeto TaskList. 
 	Nela foram implementados as seguintes requisições:
-		- Get 
+		- Get RL
+
 		- Post
 """
 class TaskList(Resource):
@@ -84,12 +94,13 @@ class TaskList(Resource):
 		return todo_list
 
 	def post(self):
-		args = parse.parse_args()
+		args = parser.parse_args()
 		task_id = int(max(todo_list.keys()).lstrip('task')) + 1
 		task_id = 'task{}'.format(task_id)
 		task = {
 			'nome':		 args['nome'],
 			'descricao': args['descricao'],
+			'tags':		 args['tags'],
 			'status':	 args['status']
 		}
 		todo_list[task_id] = task
@@ -99,4 +110,3 @@ class TaskList(Resource):
 # Fazendo a associação entre as classes e seus respectivos Endpoints
 api.add_resource(Task, 		'/v1/todos/<string:task_id>')
 api.add_resource(TaskList, 	'/v1/todos/')
-
