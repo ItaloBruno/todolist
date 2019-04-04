@@ -1,6 +1,6 @@
 #==================================================================================
 from flask import Flask
-from flask_restful import Resource, Api, reqparse, abort, fields, marshal_with
+from flask_restful import Resource, Api, reqparse, abort, fields
 
 #==================================================================================
 # Configurações da nossa API
@@ -27,13 +27,13 @@ todo_list = {
 	}
 }
 
-taks_fields = {
-	'nome':			fields.String(default='Tarefa'),
-	'descricao': 	fields.String(default='Tarefa temporária'),
-	'tags':			fields.List(default=[]),
-	'status':		fields.Boolean(default=False),
-	'date_create':	fields.DateTime(dt_format='rfc822'),
-}
+# taks_fields = {
+# 	'nome':			fields.String(default='Tarefa'),
+# 	'descricao': 	fields.String(default='Tarefa temporária'),
+# 	'tags':			fields.List(default=[]),
+# 	'status':		fields.Boolean(default=False),
+# 	'date_create':	fields.DateTime(dt_format='rfc822'),
+# }
 
 #==================================================================================
 """
