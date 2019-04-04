@@ -2,3 +2,6 @@ venv*
 .vscode
 __pycache__
 .env*
+.pytest*
+.eggs
+api_*

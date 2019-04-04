@@ -11,6 +11,11 @@ __long_description__ = 'Esta é uma API de uma aplicação todolist feita com o 
 __author__ = 'Italo Bruno'
 __author_email__ = 'italo.silva@alunos.ifce.edu.br'
 
+testing_extras = [
+    'pytest',
+    'pytest-cov',
+]
+
 setup(
     name='api-todolist',
     version=__version__,
@@ -37,4 +42,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         # 'License :: OSI Approved :: MIT License',
     ],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
+    extras_require={
+        'testing': testing_extras,
+    },
 )
